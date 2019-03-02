@@ -9,4 +9,6 @@ const config = {
     scene: GameScene
 }
 
+
+
 export { config }
