@@ -5,7 +5,7 @@ class GameScene extends Scene {
   // ==============================
   // Preload
   constructor() {
-    super()
+    super('game')
     this.score = 0
     this.gameOver = false
   }
@@ -39,6 +39,9 @@ class GameScene extends Scene {
     this.createBombs()
 
     this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#000' })
+    this.gameOverText = this.add.text(400, 300, 'Game Over!', { fontSize: '60px', fill: '#000' })
+    this.gameOverText.setOrigin(0.5)
+    this.gameOverText.visible = false
   }
 
   createPlatform() {
@@ -51,6 +54,7 @@ class GameScene extends Scene {
 
   createPlayer() {
     this.player = this.physics.add.sprite(100, 450, 'dude')
+    this.player.setCircle(13, 2, 14)
     this.player.setBounce(0.2)
 
     this.player.setCollideWorldBounds(true)
@@ -83,6 +87,8 @@ class GameScene extends Scene {
 
   }
 
+  // -----------------------------
+  // Stars
   createStars() {
     this.stars = this.physics.add.group({
       key: 'star',
@@ -92,6 +98,7 @@ class GameScene extends Scene {
 
     this.stars.children.iterate((child) => {
       child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8))
+      child.setCircle(12)
     })
 
     this.physics.add.collider(this.stars, this.platforms)
@@ -111,6 +118,7 @@ class GameScene extends Scene {
 
         const x = (this.player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400)
         const bomb = this.bombs.create(x, 16, 'bomb');
+        bomb.setCircle(7)
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
@@ -118,6 +126,8 @@ class GameScene extends Scene {
       }
   }
 
+  // -----------------------------
+  // Bomb
   createBombs() {
     this.bombs = this.physics.add.group()
     this.physics.add.collider(this.bombs, this.platforms)
@@ -128,7 +138,11 @@ class GameScene extends Scene {
     this.physics.pause()
     player.setTint(0xff0000)
     player.anims.play('turn')
-    this.gameOver = true;
+    this.gameOver = true
+    this.gameOverText.visible = true
+    this.input.on('pointerdown', () => {
+      this.scene.start('preload')
+    })
   }
 
 
